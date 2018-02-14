@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>resource/icons/Analysis1.png</file>
+        <file>resource/icons/Event1.png</file>
+        <file>resource/icons/Graph1.png</file>
+        <file>resource/icons/theme/EventButton/OFF.png</file>
+        <file>resource/icons/theme/EventButton/ON.png</file>
+    </qresource>
+</RCC>
