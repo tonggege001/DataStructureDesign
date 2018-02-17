@@ -34,6 +34,7 @@ bool manageLog::AddLog(EventLog *e){
         int index = e->getID();
         index %= prime;
         while(logs[index]!=nullptr){
+            if(logs[index]->getID()==e->getID()) return false;
             index++;
             index %= prime;
         }
@@ -57,6 +58,7 @@ bool manageLog::AddLog(EventLog *e){
             int id = oldlogs[i]->getID();
             id %= prime;
             while(newlogs[id]){
+                if(newlogs[id]->getID()==e->getID()) return false;
                 id++;
                 id %= prime;
             }

@@ -3,8 +3,6 @@
 
 #include <QDialog>
 #include<src/managelog.h>
-
-
 namespace Ui {
 class AddDialog;
 }
@@ -14,8 +12,8 @@ class AddDialog : public QDialog
     Q_OBJECT
 
 public:
-    LOG::manageLog * ManageLog;
-     AddDialog(LOG::manageLog * Manage_Log);
+    manageLog * ManageLog;
+     AddDialog(QWidget *parent,manageLog * manage_log);
     ~AddDialog();
 
 private slots:

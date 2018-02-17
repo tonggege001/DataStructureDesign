@@ -4,8 +4,6 @@
 #include<QLineEdit>
 #include<adddialog.h>
 
-
-
 MainPage::MainPage(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainPage)
@@ -53,6 +51,6 @@ MainPage::~MainPage()
 void MainPage::on_AddButton_clicked()
 {
     AddDialog * adddialog;
-    adddialog = new AddDialog(this->ManageLog);
-   // adddialog->show();
+    adddialog = new AddDialog(this,(manageLog *)(this->ManageLog));
+    adddialog->exec();
 }
