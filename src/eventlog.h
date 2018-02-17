@@ -2,6 +2,9 @@
 #define EVENTLOG_H
 #include <string>
 #include<ctime>
+#include<ostream>
+#include<istream>
+
 using std::string;
 
 namespace LOG {
@@ -10,16 +13,16 @@ class EventLog;
 class EventLog
 {
 private:
-    string logName; //日志名称
+    string * logName; //日志名称
     int sourceID;//日志来源
     time_t occurTime;//发生时间
     int eventID;//事件ID
     int taskType;//任务类别（客体）
     int classType;//级别
-    string User;//发生事件的用户（主体）
+    string * User;//发生事件的用户（主体）
     int eventRecordID;//出现问题的进程ID
     int keyWord;
-    string description;//事件的描述
+    string * description;//事件的描述
 
 
 public:
@@ -31,11 +34,12 @@ public:
     ~EventLog();
     int getID(){return this->eventID;}
 
-    string & getLogName(){return this->logName;}
+    string & getLogName(){return *this->logName;}
 
     int setLogName(string name){
         if(name.length()!=0){
-            this->logName = *new string(name.data());
+            delete this->logName;
+            this->logName = new string(name.data());
             return 1;
         }
         else{
@@ -44,7 +48,8 @@ public:
     }
 
     bool setLogName(char name[]){
-        this->logName = *new string(name);
+        delete this->logName;
+        this->logName = new string(name);
         return true;
     }
 
@@ -74,9 +79,14 @@ public:
         return true;
     }
 
-    string& getUser(){return this->User;}
+    string getUser(){
+        if(this->User!=nullptr)
+            return *this->User;
+        else return "";
+    }
     bool setUser(char name[]){
-        this->User = *new string(name);
+        delete this->User;
+        this->User = new string(name);
         return true;
     }
 
@@ -86,11 +96,19 @@ public:
     int getKeyWord(){return this->keyWord;}
     bool setKeyWord(int key){this->keyWord = key;return true;}
 
-    string getDescription(){return this->description;}
+    string  getDescription(){
+        if(this->description==nullptr)
+            return *this->description;
+        else return "";
+    }
     bool setDescription(char des[]){
-        this->description = *new string(des);
+        delete this->description;
+        this->description = new string(des);
         return true;
     }
+
+    friend std::ostream &operator<<(std::ostream & , EventLog &);
+    friend std::istream &operator>>(std::istream & , EventLog &);
 };
 
 #endif // EVENTLOG_H

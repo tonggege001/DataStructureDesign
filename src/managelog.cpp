@@ -2,6 +2,8 @@
 #include "tools/tool.h"
 #include <queue>
 #include <string>
+#include<fstream>
+
 
 manageLog::manageLog(){
     this->logNumber = 0;
@@ -9,8 +11,10 @@ manageLog::manageLog(){
     this->prime = MinPrime(this->size);
     this->logs = (EventLog ** )malloc(sizeof(EventLog*)*INIT_SIZE);
     for(int i = 0;i<INIT_SIZE-1;i++) logs[i] = nullptr;
+    LoadData();
 }
 manageLog::~manageLog(){
+    SaveData();
     for(int i = 0;i<this->size;i++){
         if(logs[i]!=nullptr){
             delete logs[i];
@@ -193,8 +197,37 @@ queue<int> & manageLog::searchByTaskType(int task){
 
 
 bool modifyLog(int eventId){
+    int a = eventId;
     return true;
 }
 
+bool manageLog::LoadData(){
+    std::ifstream infile("EventLog");
+    if(!infile.is_open()) return false;
+    EventLog * newlog;
+    do{
+        newlog = new EventLog(1);
+        infile >> *newlog;
+        if(infile.eof()) {
+            delete newlog;
+            break;
+        }
+        else{
+            this->AddLog(newlog);
+        }
+    }while(true);
+    infile.close();
+    return true;
+}
 
+bool manageLog::SaveData(){
+    std::ofstream outfile("EventLog");
+    for(int i = 0;i<this->size;i++){
+        if(this->logs[i]!=nullptr&&this->logs[i]->tag==1){
+            outfile << *logs[i];
+        }
+    }
+    outfile.close();
+    return true;
+}
 

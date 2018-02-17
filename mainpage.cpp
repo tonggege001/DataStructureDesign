@@ -1,11 +1,9 @@
 #include "mainpage.h"
 #include "ui_mainpage.h"
-#include"QVBoxLayout"
-#include"QHBoxLayout"
 #include <QCheckBox>
 #include<QLineEdit>
+#include<adddialog.h>
 
-using namespace LOG;
 
 
 MainPage::MainPage(QWidget *parent) :
@@ -13,6 +11,7 @@ MainPage::MainPage(QWidget *parent) :
     ui(new Ui::MainPage)
 {
     ui->setupUi(this);
+    //设置表格
     Tablemodel = new QStandardItemModel();
     //设置列号
     Tablemodel->setColumnCount(11);
@@ -28,10 +27,32 @@ MainPage::MainPage(QWidget *parent) :
     Tablemodel->setHeaderData(9,Qt::Horizontal,QString::fromUtf8("关键字"));
     Tablemodel->setHeaderData(10,Qt::Horizontal,QString::fromUtf8("描述"));
     ui->tableView->setModel(Tablemodel);
+
+    //加载manage文件
+    this->ManageLog = new manageLog();
+
+
+
+    //设置绘图工具
+    GraphScene = new QGraphicsScene();
+    ui->graphicsView->setScene(GraphScene);
+    GraphScene->addText("你好！");
+
+
+
 }
 
 MainPage::~MainPage()
 {
-
+    delete Tablemodel;
+    delete GraphScene;
+    delete this->ManageLog;
 }
 
+
+void MainPage::on_AddButton_clicked()
+{
+    AddDialog * adddialog;
+    adddialog = new AddDialog(this->ManageLog);
+   // adddialog->show();
+}

@@ -14,7 +14,6 @@ int main(int argc, char *argv[])
     qss.close();
 
 
-
     MainPage w;
     w.show();
 

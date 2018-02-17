@@ -17,6 +17,7 @@ public:
     int size;
     int prime;
     EventLog **logs;
+
     manageLog();
     ~manageLog();
 
@@ -36,6 +37,8 @@ public:
 
     bool modifyLog(int eventId);
 
+    bool LoadData();
+    bool SaveData();
 };
 
 #endif // MANAGELOG_H

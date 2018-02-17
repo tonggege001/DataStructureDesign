@@ -1,7 +1,9 @@
 #include "eventlog.h"
 #include <string>
+#include<ostream>
+#include<istream>
 /**
- * @brief EventLog::EventLog
+ * @brief EventLog::EventLog 构造函数
  * @param ID事件ID
  */
 EventLog::EventLog(int ID)
@@ -17,6 +19,19 @@ EventLog::EventLog(int ID)
     this->User = nullptr;
     this->description = nullptr;
 }
+/**
+ * @brief 构造函数
+ * @param logName 日志名称
+ * @param sourceID 发生进程的ID
+ * @param occurTime 发生时间
+ * @param eventID 事件ID
+ * @param taskType任务类型
+ * @param classType任务等级
+ * @param User 使用者
+ * @param eventRecordID 事件记录ID
+ * @param keyWord 关键字
+ * @param description 描述
+ */
 EventLog::EventLog(string logName,int sourceID,time_t occurTime,
          int eventID,int taskType,int classType,string User,
                    int eventRecordID,int keyWord,string description){
@@ -24,21 +39,43 @@ EventLog::EventLog(string logName,int sourceID,time_t occurTime,
     this->classType = classType;
     this->eventRecordID = eventRecordID;
     this->keyWord = keyWord;
-    this->logName = *new string(logName.data());
+    this->logName = new string(logName.data());
     this->sourceID = sourceID;
     this->occurTime = occurTime;
     this->taskType = taskType;
-    this->User = *new string(User.data());
-    this->description = *new string(description.data());
+    this->User = new string(User.data());
+    this->description = new string(description.data());
 }
 
+/**
+ * @brief EventLog::~EventLog 析构函数
+ *                              将所分配的空间都释放
+ */
 EventLog::~EventLog(){
-    delete &this->logName;
-    delete &this->User;
-    delete &this->description;
+    if(this->logName!=nullptr) delete this->logName;
+    if(this->logName!=nullptr) delete this->User;
+    if(this->logName!=nullptr) delete this->description;
+}
+std::ostream & operator<<(std::ostream & out  , EventLog & log ){
+     out << log.logName <<' '<< log.sourceID<<' '<<log.occurTime<<' '<<log.eventID<<' '<<
+           ' '<<log.taskType<<' '<<log.classType<<' '<<log.User<<' '
+        <<log.eventRecordID<<' '<<log.keyWord<<' '<<log.description<<' ';
+     return out;
 }
 
-
+std::istream &operator>>(std::istream & input , EventLog &log){
+    string *logname = new string();
+    string *User = new string();
+    string *Description = new string();
+    char c;
+    input >> *logname>>c>>log.sourceID>>c>>log.occurTime>>c>>log.eventID>>c>>log.taskType
+            >>c>>log.classType>>c>>*User>>c>>log.eventRecordID>>c>>
+            log.keyWord>>c>>*Description>>c;
+    log.logName = logname;
+    log.User = User;
+    log.description = Description;
+    return input;
+}
 
 
 

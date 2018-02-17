@@ -27,23 +27,22 @@ SOURCES += \
         main.cpp \
         mainpage.cpp \
     src/eventlog.cpp \
-    src/manage.cpp \
     src/managelog.cpp \
     tools/linkedlist.cpp \
     tools/tool.cpp \
-    ui/title_widget.cpp
+    adddialog.cpp
 
 HEADERS += \
         mainpage.h \
     src/eventlog.h \
-    src/manage.h \
     src/managelog.h \
     tools/linkedlist.h \
     tools/tool.h \
-    ui/title_widget.h
+    adddialog.h
 
 FORMS += \
-        mainpage.ui
+        mainpage.ui \
+    adddialog.ui
 
 DISTFILES += \
     resource/icons/Analysis1.png \

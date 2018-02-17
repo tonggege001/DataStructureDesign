@@ -1,12 +1,11 @@
 #ifndef MAINPAGE_H
 #define MAINPAGE_H
-
 #include <QMainWindow>
+#include"src/managelog.h"
 #include"QStandardItemModel"
-#include "src/manage.h"
 #include<QPushButton>
+#include<QGraphicsScene>
 
-using namespace LOG;
 namespace Ui {
 class MainPage;
 }
@@ -16,12 +15,15 @@ class MainPage : public QMainWindow
     Q_OBJECT
 
 public:
-    LOG::manage *Manage;
-    QStandardItemModel * Tablemodel;
+    manageLog * ManageLog;
+    QStandardItemModel * Tablemodel;//日志操作的Model
+    QGraphicsScene * GraphScene;
     explicit MainPage(QWidget *parent = 0);
     ~MainPage();
 
 private slots:
+
+    void on_AddButton_clicked();
 
 private:
     Ui::MainPage *ui;
