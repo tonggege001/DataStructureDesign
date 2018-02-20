@@ -216,7 +216,27 @@
      <widget class="QLineEdit" name="DescriptionEdit"/>
     </item>
     <item row="2" column="1">
-     <widget class="QDateTimeEdit" name="OccurTimeEdit"/>
+     <widget class="QDateTimeEdit" name="OccurTimeEdit">
+      <property name="dateTime">
+       <datetime>
+        <hour>0</hour>
+        <minute>0</minute>
+        <second>0</second>
+        <year>2018</year>
+        <month>1</month>
+        <day>1</day>
+       </datetime>
+      </property>
+      <property name="calendarPopup">
+       <bool>true</bool>
+      </property>
+      <property name="currentSectionIndex">
+       <number>0</number>
+      </property>
+      <property name="timeSpec">
+       <enum>Qt::LocalTime</enum>
+      </property>
+     </widget>
     </item>
    </layout>
   </widget>

@@ -85,14 +85,14 @@
         <widget class="QLineEdit" name="EventIDEdit"/>
        </item>
        <item row="1" column="0">
-        <widget class="QCheckBox" name="EventSourceIDCheck">
+        <widget class="QCheckBox" name="EventRecordIDCheck">
          <property name="text">
           <string>按照日志的进程ID：</string>
          </property>
         </widget>
        </item>
        <item row="1" column="1">
-        <widget class="QLineEdit" name="EventRourceEdit"/>
+        <widget class="QLineEdit" name="EventREdit"/>
        </item>
       </layout>
      </widget>
@@ -143,7 +143,7 @@
         <x>0</x>
         <y>90</y>
         <width>1221</width>
-        <height>51</height>
+        <height>41</height>
        </rect>
       </property>
       <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -161,16 +161,23 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="SaveButton">
+        <widget class="QPushButton" name="AddButton">
          <property name="text">
-          <string>保存</string>
+          <string>添加</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="AddButton">
+        <widget class="QPushButton" name="pushButton">
          <property name="text">
-          <string>添加</string>
+          <string>修改</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="SaveButton">
+         <property name="text">
+          <string>存盘</string>
          </property>
         </widget>
        </item>
@@ -190,6 +197,12 @@
         <widget class="QTableView" name="tableView">
          <property name="editTriggers">
           <set>QAbstractItemView::DoubleClicked|QAbstractItemView::EditKeyPressed|QAbstractItemView::SelectedClicked</set>
+         </property>
+         <property name="tabKeyNavigation">
+          <bool>true</bool>
+         </property>
+         <property name="showDropIndicator" stdset="0">
+          <bool>true</bool>
          </property>
          <property name="dragDropOverwriteMode">
           <bool>false</bool>
@@ -238,12 +251,18 @@
          <property name="whatsThis">
           <string extracomment="时间上界"/>
          </property>
+         <property name="timeSpec">
+          <enum>Qt::LocalTime</enum>
+         </property>
         </widget>
        </item>
        <item>
         <widget class="QDateTimeEdit" name="TimeEditHigh">
          <property name="whatsThis">
           <string extracomment="时间下界"/>
+         </property>
+         <property name="timeSpec">
+          <enum>Qt::LocalTime</enum>
          </property>
         </widget>
        </item>
@@ -406,99 +425,37 @@
    </property>
    <widget class="QMenu" name="menu">
     <property name="title">
-     <string>数据保存</string>
+     <string>文件</string>
     </property>
+    <widget class="QMenu" name="menu_2">
+     <property name="title">
+      <string>删除日志</string>
+     </property>
+     <addaction name="action_Delete_ID"/>
+     <addaction name="action_Dleete_RecordID"/>
+     <addaction name="action_delete_Source"/>
+    </widget>
+    <addaction name="menu_2"/>
    </widget>
    <addaction name="menu"/>
   </widget>
-  <action name="action">
-   <property name="checkable">
-    <bool>false</bool>
-   </property>
+  <action name="action_Delete_ID">
    <property name="text">
-    <string>导入事件</string>
-   </property>
-   <property name="iconText">
-    <string extracomment="选择保存事件的文件进行导入导入事件">导入事件</string>
+    <string>按照日志ID</string>
    </property>
   </action>
-  <action name="action_2">
+  <action name="action_Dleete_RecordID">
    <property name="text">
-    <string>导出事件</string>
+    <string>按照日志进程</string>
    </property>
   </action>
-  <action name="action_3">
+  <action name="action_delete_Source">
    <property name="text">
-    <string>保存事件</string>
-   </property>
-  </action>
-  <action name="action_5">
-   <property name="text">
-    <string>保存关联图</string>
-   </property>
-  </action>
-  <action name="action_6">
-   <property name="text">
-    <string>导出关联图</string>
-   </property>
-  </action>
-  <action name="action_7">
-   <property name="text">
-    <string>导入关联图边</string>
-   </property>
-  </action>
-  <action name="actionEventsArise">
-   <property name="checkable">
-    <bool>false</bool>
-   </property>
-   <property name="icon">
-    <iconset theme="事件操作" resource="res.qrc">
-     <normaloff>:/images/resource/icons/Event1.png</normaloff>:/images/resource/icons/Event1.png</iconset>
-   </property>
-   <property name="text">
-    <string>日志操作</string>
-   </property>
-   <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;日志操作(ctrl+E)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+E</string>
-   </property>
-  </action>
-  <action name="actionGraphArise">
-   <property name="icon">
-    <iconset resource="res.qrc">
-     <normaloff>:/images/resource/icons/Graph1.png</normaloff>:/images/resource/icons/Graph1.png</iconset>
-   </property>
-   <property name="text">
-    <string>关联图操作</string>
-   </property>
-   <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;关联图操作(ctrl+G)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+G</string>
-   </property>
-  </action>
-  <action name="actionAnalysis">
-   <property name="icon">
-    <iconset resource="res.qrc">
-     <normaloff>:/images/resource/icons/Analysis1.png</normaloff>:/images/resource/icons/Analysis1.png</iconset>
-   </property>
-   <property name="text">
-    <string>行为分析</string>
-   </property>
-   <property name="toolTip">
-    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-weight:600;&quot;&gt;行为分析(ctrl+A)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+A</string>
+    <string>按照来源</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources>
-  <include location="res.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

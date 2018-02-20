@@ -2,8 +2,9 @@
 #define MANAGELOG_H
 #include"eventlog.h"
 #include"tools/linkedlist.h"
-#include<queue>
-using std::queue;
+#include<vector>
+
+using std::vector;
 
 namespace LOG {
     class manageLog;
@@ -28,14 +29,16 @@ public:
     bool DeleteLogbySourceID(int sourceID);
     bool DeleteLogbyRecordID(int eventRecordID);
 
-    int searchByID(int index);
-    queue<int> & searchByTime(time_t time);
-    queue<int> & searchByTime(time_t low,time_t high);
-    queue<int> & searchByUser(string User);
-    queue<int> & searchByRecordID(int id);
-    queue<int> & searchByTaskType(int task);
+    vector<int> * searchByID(int index);
+    vector<int> * searchByTime(time_t time);
+    vector<int> * searchByTime(time_t low,time_t high);
+    vector<int> * searchByUser(string User);
+    vector<int> * searchByRecordID(int id);
+    vector<int> * searchByTaskType(int task);
 
-    bool modifyLog(int eventId);
+    bool modifyLog(int eventId,string logName,int sourceID,time_t occurTime,
+                              int taskType,int classType,string User,
+                                        int eventRecordID,int keyWord,string description);
 
     bool LoadData();
     bool SaveData();

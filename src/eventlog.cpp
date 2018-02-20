@@ -12,12 +12,13 @@ EventLog::EventLog(int ID)
     this->classType = 0;
     this->eventRecordID = -1;
     this->keyWord = 0;
-    this->logName = nullptr;
+    this->logName = NULL;
     this->sourceID = 0;
     this->occurTime = 0;
     this->taskType = 0;
-    this->User = nullptr;
-    this->description = nullptr;
+    this->User = NULL;
+    this->description = NULL;
+    this->tag = 0;
 }
 /**
  * @brief 构造函数
@@ -45,6 +46,7 @@ EventLog::EventLog(string logName,int sourceID,time_t occurTime,
     this->taskType = taskType;
     this->User = new string(User.data());
     this->description = new string(description.data());
+    this->tag = 0;
 }
 
 /**
@@ -52,25 +54,24 @@ EventLog::EventLog(string logName,int sourceID,time_t occurTime,
  *                              将所分配的空间都释放
  */
 EventLog::~EventLog(){
-    if(this->logName!=nullptr) delete this->logName;
-    if(this->logName!=nullptr) delete this->User;
-    if(this->logName!=nullptr) delete this->description;
+    if(this->logName!=NULL) delete this->logName;
+    if(this->logName!=NULL) delete this->User;
+    if(this->logName!=NULL) delete this->description;
 }
 std::ostream & operator<<(std::ostream & out  , EventLog & log ){
-     out << log.logName <<' '<< log.sourceID<<' '<<log.occurTime<<' '<<log.eventID<<' '<<
-           ' '<<log.taskType<<' '<<log.classType<<' '<<log.User<<' '
-        <<log.eventRecordID<<' '<<log.keyWord<<' '<<log.description<<' ';
+     out << *log.logName <<' '<< log.sourceID<<' '<<log.occurTime<<' '<<log.eventID<<' '<<
+           ' '<<log.taskType<<' '<<log.classType<<' '<<*log.User<<' '
+        <<log.eventRecordID<<' '<<log.keyWord<<' '<<*log.description<<' ';
      return out;
 }
 
 std::istream &operator>>(std::istream & input , EventLog &log){
-    string *logname = new string();
-    string *User = new string();
-    string *Description = new string();
-    char c;
-    input >> *logname>>c>>log.sourceID>>c>>log.occurTime>>c>>log.eventID>>c>>log.taskType
-            >>c>>log.classType>>c>>*User>>c>>log.eventRecordID>>c>>
-            log.keyWord>>c>>*Description>>c;
+    string * logname = new string();
+    string * User = new string();
+    string * Description = new string();
+    input >> *logname>>log.sourceID>>log.occurTime>>log.eventID>>log.taskType
+            >>log.classType>>*User>>log.eventRecordID>>
+            log.keyWord>>*Description;
     log.logName = logname;
     log.User = User;
     log.description = Description;

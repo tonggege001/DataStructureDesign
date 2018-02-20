@@ -1,6 +1,6 @@
 #include "managelog.h"
 #include "tools/tool.h"
-#include <queue>
+#include <vector>
 #include <string>
 #include<fstream>
 
@@ -10,13 +10,12 @@ manageLog::manageLog(){
     this->size = INIT_SIZE;
     this->prime = MinPrime(this->size);
     this->logs = (EventLog ** )malloc(sizeof(EventLog*)*INIT_SIZE);
-    for(int i = 0;i<INIT_SIZE-1;i++) logs[i] = nullptr;
+    for(int i = 0;i<INIT_SIZE-1;i++) logs[i] = NULL;
     LoadData();
 }
 manageLog::~manageLog(){
-    SaveData();
     for(int i = 0;i<this->size;i++){
-        if(logs[i]!=nullptr){
+        if(logs[i]!=NULL){
             delete logs[i];
         }
     }
@@ -33,7 +32,7 @@ bool manageLog::AddLog(EventLog *e){
     if(size>logNumber){
         int index = e->getID();
         index %= prime;
-        while(logs[index]!=nullptr){
+        while(logs[index]!=NULL){
             if(logs[index]->getID()==e->getID()) return false;
             index++;
             index %= prime;
@@ -48,13 +47,13 @@ bool manageLog::AddLog(EventLog *e){
         //重新分配内存
         newlogs = (EventLog **)malloc((this->size+INCREMENT)*sizeof(EventLog*));
         if(!newlogs) return false;
-        for(int i = 0;i<size+INCREMENT;i++) newlogs[i] = nullptr;
+        for(int i = 0;i<size+INCREMENT;i++) newlogs[i] = NULL;
         this->logs = newlogs;
         //产生最接近空间大小的素数
         this->prime = MinPrime(size+INCREMENT);
         //把Log从旧内存迁移到新内存
         for(int i = 0;i<size;i++){
-            if(oldlogs[i]==nullptr) continue;
+            if(oldlogs[i]==NULL) continue;
             int id = oldlogs[i]->getID();
             id %= prime;
             while(newlogs[id]){
@@ -85,19 +84,20 @@ bool manageLog::AddLog(EventLog *e){
  */
 bool manageLog::DeleteLog(int eventID){
     int id = eventID%prime;
-    id = searchByID(id);//查找id
-    //如果是空指针
-    if(id==-1) return false;
-    else{
-        delete this->logs[id];
-        this->logs[id] = nullptr;
-        logNumber--;
-        return true;
-    }
+    vector<int> *V;
+    V = searchByID(id);//查找id
+    //查找失败
+    if(V==NULL) return false;
+    id = V->back();
+    delete V;//释放内存
+    delete this->logs[id];
+    this->logs[id] = NULL;
+    logNumber--;
+    return true;
 }
 bool manageLog::DeleteLog(string logName){
     for(int i = 0;i<this->size;i++){
-        if(this->logs[i]!=nullptr&&
+        if(this->logs[i]!=NULL&&
                 this->logs[i]->getLogName()==logName){
             if(!DeleteLog(this->logs[i]->getID())){
                 return false;
@@ -122,31 +122,50 @@ bool manageLog::DeleteLogbySourceID(int sourceID){
     }
     return true;
 }
-bool DeleteLogbyRecordID(int eventRecordID);
+bool manageLog::DeleteLogbyRecordID(int eventRecordID){
+    for(int i = 0;i<this->size;i++){
+        if(this->logs[i]->getEventRecordID()==eventRecordID){
+            if(!DeleteLog(logs[i]->getID())){
+                return false;
+            }
+            else{
+                logNumber--;
+            }
+        }
+    }
+    return true;
+}
 
-int manageLog::searchByID(int index){
+vector<int> * manageLog::searchByID(int index){
+    vector<int> * V = new vector<int>();
     int id = index%prime;
     do{
-        if(this->logs[id]==nullptr) return -1;
-        if(this->logs[id]->getID()==index) return id;
+        if(this->logs[id]==NULL){
+            delete V;
+            return NULL;
+        }
+        if(this->logs[id]->getID()==index){
+            V->push_back(id);
+            return V;
+        }
         id++;
         id %= prime;
     }while(true);
-    return -1;
+    return NULL;
 }
 /**
  * @brief 通过时间查询
  * @param 输入时间点
  * @return 返回一个log的队列
  */
-queue<int> & manageLog::searchByTime(time_t time){
-    queue<int> & Q = *new queue<int>();
+vector<int> * manageLog::searchByTime(time_t time){
+    vector<int> * V = new vector<int>();
     for(int i = 0;i<this->size;i++){
-        if(this->logs[i]!=nullptr&&this->logs[i]->getTime()==time){
-           Q.push(i);
+        if(this->logs[i]!=NULL&&this->logs[i]->getTime()==time){
+            V->push_back(i);
         }
     }
-    return Q;
+    return V;
 }
 /**
  * @brief 通过时间查询
@@ -154,12 +173,12 @@ queue<int> & manageLog::searchByTime(time_t time){
  * @param high上界
  * @return 消息队列
  */
-queue<int> & manageLog::searchByTime(time_t low,time_t high){
-    queue<int> & Q = *new queue<int>();
+vector<int> * manageLog::searchByTime(time_t low,time_t high){
+    vector<int> * Q = new vector<int>();
     for(int i = 0;i<this->size;i++){
-        if(this->logs[i]!=nullptr&&this->logs[i]->getTime()>=low
+        if(this->logs[i]!=NULL&&this->logs[i]->getTime()>=low
                 &&this->logs[i]->getTime()<=high){
-            Q.push(i);
+            Q->push_back(i);
         }
     }
     return Q;
@@ -169,37 +188,50 @@ queue<int> & manageLog::searchByTime(time_t low,time_t high){
  * @param User 使用者字符串
  * @return 消息队列
  */
-queue<int> & manageLog::searchByUser(string User){
-    queue<int> & Q = *new queue<int>();
+vector<int> * manageLog::searchByUser(string User){
+    vector<int> * Q = new vector<int>();
     for(int i = 0;i<this->size;i++){
-        if(this->logs[i]!=nullptr&&this->logs[i]->getUser()==User){
-            Q.push(i);
+        if(this->logs[i]!=NULL&&this->logs[i]->getUser()==User){
+            Q->push_back(i);
         }
     }
     return Q;
 }
-queue<int> & manageLog::searchByRecordID(int id){
-    queue<int> & Q = *new queue<int>();
+vector<int> * manageLog::searchByRecordID(int id){
+    vector<int> * Q = new vector<int>();
     for(int i = 0;i<this->size;i++){
-        if(this->logs[i]!=nullptr&&this->logs[i]->getEventRecordID()==id){
-            Q.push(i);
+        if(this->logs[i]!=NULL&&this->logs[i]->getEventRecordID()==id){
+            Q->push_back(i);
         }
     }
     return Q;
 }
-queue<int> & manageLog::searchByTaskType(int task){
-    queue<int> & Q = *new queue<int>();
+vector<int> * manageLog::searchByTaskType(int task){
+    vector<int> * Q = new vector<int>();
     for(int i = 0;i<this->size;i++){
-        if(this->logs[i]!=nullptr&&this->logs[i]->getTaskType()==task){
-            Q.push(i);
+        if(this->logs[i]!=NULL&&this->logs[i]->getTaskType()==task){
+            Q->push_back(i);
         }
     }
     return Q;
 }
 
 
-bool modifyLog(int eventId){
-    int a = eventId;
+bool manageLog::modifyLog(int eventId,string logName,int sourceID,time_t occurTime,
+                          int taskType,int classType,string User,
+                                    int eventRecordID,int keyWord,string description){
+    vector<int> * result;
+    result = this->searchByID(eventId);
+    int id = result->back();delete result;
+    this->logs[id]->setLogName(logName);
+    this->logs[id]->setSourceID(sourceID);
+    this->logs[id]->setTime(occurTime);
+    this->logs[id]->setTaskType(taskType);
+    this->logs[id]->setClassType(classType);
+    this->logs[id]->setUser(User);
+    this->logs[id]->setEventRecordID(eventRecordID);
+    this->logs[id]->setKeyWord(keyWord);
+    this->logs[id]->setDescription(description);
     return true;
 }
 
@@ -225,7 +257,7 @@ bool manageLog::LoadData(){
 bool manageLog::SaveData(){
     std::ofstream outfile("EventLog");
     for(int i = 0;i<this->size;i++){
-        if(this->logs[i]!=nullptr&&this->logs[i]->tag==1){
+        if(this->logs[i]!=NULL){
             outfile << *logs[i];
         }
     }

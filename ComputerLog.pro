@@ -30,7 +30,8 @@ SOURCES += \
     src/managelog.cpp \
     tools/linkedlist.cpp \
     tools/tool.cpp \
-    adddialog.cpp
+    adddialog.cpp \
+    src/managegraph.cpp
 
 HEADERS += \
         mainpage.h \
@@ -38,7 +39,8 @@ HEADERS += \
     src/managelog.h \
     tools/linkedlist.h \
     tools/tool.h \
-    adddialog.h
+    adddialog.h \
+    src/managegraph.h
 
 FORMS += \
         mainpage.ui \
