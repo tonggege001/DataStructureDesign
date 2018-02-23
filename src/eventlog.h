@@ -32,7 +32,10 @@ public:
              int eventID,int taskType,int classType,string User,
              int eventRecordID,int keyWord,string description);
     ~EventLog();
-    int getID(){return this->eventID;}
+    int getID(){
+        if(this==NULL) return -1;
+        return this->eventID;
+    }
 
     string getLogName(){return *this->logName;}
 

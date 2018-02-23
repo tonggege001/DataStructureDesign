@@ -31,7 +31,9 @@ SOURCES += \
     tools/linkedlist.cpp \
     tools/tool.cpp \
     adddialog.cpp \
-    src/managegraph.cpp
+    src/managegraph.cpp \
+    src/eventgraph.cpp \
+    tools/gnode.cpp
 
 HEADERS += \
         mainpage.h \
@@ -40,7 +42,9 @@ HEADERS += \
     tools/linkedlist.h \
     tools/tool.h \
     adddialog.h \
-    src/managegraph.h
+    src/managegraph.h \
+    src/eventgraph.h \
+    tools/gnode.h
 
 FORMS += \
         mainpage.ui \

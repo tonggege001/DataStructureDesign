@@ -34,7 +34,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="iconSize">
      <size>
@@ -251,6 +251,9 @@
          <property name="whatsThis">
           <string extracomment="时间上界"/>
          </property>
+         <property name="displayFormat">
+          <string>yyyy/M/d H:mm:ss</string>
+         </property>
          <property name="timeSpec">
           <enum>Qt::LocalTime</enum>
          </property>
@@ -260,6 +263,9 @@
         <widget class="QDateTimeEdit" name="TimeEditHigh">
          <property name="whatsThis">
           <string extracomment="时间下界"/>
+         </property>
+         <property name="displayFormat">
+          <string>yyyy/M/d H:mm:ss</string>
          </property>
          <property name="timeSpec">
           <enum>Qt::LocalTime</enum>
@@ -297,28 +303,31 @@
         </widget>
        </item>
        <item>
-        <widget class="QRadioButton" name="radioButton_3">
+        <widget class="QRadioButton" name="SubRadio">
          <property name="text">
           <string>主体相关</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QRadioButton" name="radioButton">
+        <widget class="QRadioButton" name="ObjRadio">
          <property name="text">
           <string>客体相关</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QRadioButton" name="radioButton_2">
+        <widget class="QRadioButton" name="AccomRadio">
          <property name="text">
           <string>相伴事件</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QRadioButton" name="radioButton_4">
+        <widget class="QRadioButton" name="CAERadio">
          <property name="text">
           <string>因果相关</string>
          </property>
@@ -353,7 +362,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QLineEdit" name="lineEdit_3"/>
+        <widget class="QLineEdit" name="IndexEdit"/>
        </item>
       </layout>
      </widget>
@@ -374,21 +383,21 @@
         <number>200</number>
        </property>
        <item>
-        <widget class="QPushButton" name="pushButton_6">
+        <widget class="QPushButton" name="GraphQuery">
          <property name="text">
           <string>查询</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_5">
+        <widget class="QPushButton" name="GraphClear">
          <property name="text">
           <string>清除</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_4">
+        <widget class="QPushButton" name="GraphUpdate">
          <property name="text">
           <string>更新</string>
          </property>

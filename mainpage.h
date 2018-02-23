@@ -2,6 +2,7 @@
 #define MAINPAGE_H
 #include <QMainWindow>
 #include"src/managelog.h"
+#include"src/managegraph.h"
 #include"QStandardItemModel"
 #include<QPushButton>
 #include<QGraphicsScene>
@@ -16,6 +17,7 @@ class MainPage : public QMainWindow
 
 public:
     manageLog * ManageLog;
+    manageGraph * ManageGraph;
     QStandardItemModel * Tablemodel;//日志操作的Model
     QGraphicsScene * GraphScene;
     explicit MainPage(QWidget *parent = 0);
@@ -36,6 +38,10 @@ private slots:
     void on_action_Dleete_RecordID_triggered();
 
     void on_action_delete_Source_triggered();
+
+    void on_GraphQuery_clicked();
+
+    void on_GraphUpdate_clicked();
 
 private:
     Ui::MainPage *ui;

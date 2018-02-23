@@ -10,7 +10,7 @@ manageLog::manageLog(){
     this->size = INIT_SIZE;
     this->prime = MinPrime(this->size);
     this->logs = (EventLog ** )malloc(sizeof(EventLog*)*INIT_SIZE);
-    for(int i = 0;i<INIT_SIZE-1;i++) logs[i] = NULL;
+    for(int i = 0;i<this->size;i++) logs[i] = NULL;
     LoadData();
 }
 manageLog::~manageLog(){
@@ -77,6 +77,23 @@ bool manageLog::AddLog(EventLog *e){
     }
     return true;
 }
+
+EventLog * manageLog::getLog(int index){
+    int id = index%prime;
+    do{
+        if(this->logs[id]==NULL){
+            return NULL;
+        }
+        if(this->logs[id]->getID()==index){
+            return this->logs[id];
+        }
+        id++;
+        id %= prime;
+    }while(true);
+    return NULL;
+}
+
+
 /**
  * @brief manageLog::DeleteLog删除LOG
  * @param eventID 事件ID

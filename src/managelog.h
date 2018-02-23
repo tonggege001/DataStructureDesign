@@ -23,6 +23,7 @@ public:
     ~manageLog();
 
     bool AddLog(EventLog *e);
+    EventLog * getLog(int id);
 
     bool DeleteLog(int eventID);
     bool DeleteLog(string logName);

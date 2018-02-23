@@ -58,6 +58,7 @@ EventLog::~EventLog(){
     if(this->logName!=NULL) delete this->User;
     if(this->logName!=NULL) delete this->description;
 }
+
 std::ostream & operator<<(std::ostream & out  , EventLog & log ){
      out << *log.logName <<' '<< log.sourceID<<' '<<log.occurTime<<' '<<log.eventID<<' '<<
            ' '<<log.taskType<<' '<<log.classType<<' '<<*log.User<<' '
