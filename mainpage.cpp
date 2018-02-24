@@ -11,6 +11,7 @@
 #include<QInputDialog>
 #include"src/managegraph.h"
 #include"tools/gnode.h"
+#include"tools/tool.h"
 
 MainPage::MainPage(QWidget *parent) :
     QMainWindow(parent),
@@ -181,11 +182,7 @@ void MainPage::on_GraphQuery_clicked()
     //初始时先把上一次的作图残留释放
     QGraphicsScene * scene = this->GraphScene;
     scene->clear();
-    while(!this->ManageGraph->v.empty()){
-        GNode * g = this->ManageGraph->v.back();
-        delete g;
-        this->ManageGraph->v.pop_back();
-    }
+
     manageGraph * ManageGraph = this->ManageGraph;
     if(ManageGraph->GraphCount()==0){
         QMessageBox::about(this,"提示","数据中没有图文件，请点击右侧“更新”按钮！");
@@ -210,10 +207,10 @@ void MainPage::on_GraphQuery_clicked()
         QMessageBox::about(this,"提示","图不存在！");
         return ;
     }
-    this->ManageGraph->DrawGraph(scene, G);
-
-
-
+    if(type!=LOG::GraphType::CauseAndEffect) this->ManageGraph->DrawGraph(scene, G,type);
+    else{
+        this->ManageGraph->DrawGraphCE(scene,G,ui->IndexEdit->text().toInt());
+    }
 
 }
 
@@ -232,13 +229,64 @@ void MainPage::on_GraphUpdate_clicked()
             ManageGraph->addGraph(g);
         }
         if(!ManageGraph->hasGraph(ManageLog->logs[i]->getID(),LOG::GraphType::Object)){
-
+            EventGraph * g = ManageGraph->generateGraph(ManageLog->logs[i]->getID(),LOG::GraphType::Object);
+            ManageGraph->addGraph(g);
         }
         if(!ManageGraph->hasGraph(ManageLog->logs[i]->getID(),LOG::GraphType::AccomEvent)){
-
+            EventGraph * g = ManageGraph->generateGraph(ManageLog->logs[i]->getID(),LOG::GraphType::AccomEvent);
+            ManageGraph->addGraph(g);
         }
         if(!ManageGraph->hasGraph(ManageLog->logs[i]->getID(),LOG::GraphType::CauseAndEffect)){
-
+            EventGraph * g = ManageGraph->generateGraph(ManageLog->logs[i]->getID(),LOG::GraphType::CauseAndEffect);
+            ManageGraph->addGraph(g);
         }
     }
+    this->ManageGraph->SaveGraph();
 }
+
+void MainPage::on_GraphClear_clicked()
+{
+    this->GraphScene->clear();
+}
+
+void MainPage::on_Analysis_clicked()
+{
+    EventLog log(-1);
+    log.setLogName(ui->LogNameE->text().toStdString());
+    log.setTaskType(ui->TaskTypeE->text().toInt());
+    log.setClassType(ui->ClassTypeE->text().toInt());
+    log.setKeyWord(ui->KeyWordE->text().toInt());
+    log.setSourceID(ui->SourceIDE->text().toInt());
+    log.setUser(ui->UserE->text().toStdString());
+    log.setTime(ui->OccurTimeE->dateTime().toSecsSinceEpoch());
+    log.setEventRecordID(ui->EventRecordE->text().toInt());
+    log.setDescription(ui->DescriptionE->text().toStdString());
+
+    //查询相似事件的结果
+    vector <EventLog*> simlog = similarLog(this->ManageLog,log);
+    if(simlog.empty()){
+        QMessageBox::about(this,"提示","没有相似的事件！");
+        ui->resultLabel->setText("分析失败，系统中没有相似的事件！");
+    }
+    QString * strSet = new QString[simlog.size()];
+    for(int i = 0;i<simlog.size();i++){
+        EventLog * eventlog = simlog.back();
+        simlog.pop_back();
+        //获得前去和后记事件；然后给出结果
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

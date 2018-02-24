@@ -1,5 +1,6 @@
 #include "eventgraph.h"
-
+#include<ostream>
+#include<istream>
 
 EventGraph::EventGraph()
 {
@@ -69,24 +70,12 @@ bool EventGraph::hasNode(int value){
     return VHmap.count(value)==1;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+int EventGraph::getKeyByValue(int value){
+    for(map<int,int>::iterator iter = this->VHmap.begin();iter!=this->VHmap.end();iter++){
+        if(iter->second == value) return iter->first;
+    }
+    return -1;
+}
 
 
 int EventGraph::getContent(){
@@ -95,4 +84,39 @@ int EventGraph::getContent(){
 bool EventGraph::setContent(int type){
     this->GraphContent = type;
     return true;
+}
+
+std::ostream &operator<<(std::ostream & out , EventGraph & G){
+    out<<G.size<<' '<<G.nodeCount<<' '<<G.GraphContent<<' ';
+    for(map<int,int>::iterator iter = G.VHmap.begin();iter!=G.VHmap.end();iter++){
+        out<<iter->first<<' '<<iter->second<<' ';
+    }
+    for(int i = 0;i<G.nodeCount;i++){
+        for(int j = 0;j<G.nodeCount;j++){
+            out<<G.adj[i][j]<<' ';
+        }
+    }
+    return out;
+}
+
+std::istream &operator>>(std::istream & input , EventGraph & G){
+    input >>G.size>>G.nodeCount>>G.GraphContent;
+    G.adj = new int*[G.size];
+    for(int i = 0;i<G.size;i++){
+        G.adj[i] = new int[G.size];
+        for(int j = 0;j<G.size;j++){
+            G.adj[i][j] = 0;
+        }
+    }
+    for(int i = 0;i<G.nodeCount;i++){
+        int key;int value;
+        input >> key>>value;
+        G.VHmap[key] = value;
+    }
+    for(int i = 0;i<G.nodeCount;i++){
+            for(int j = 0;j<G.nodeCount;j++){
+                input >> G.adj[i][j];
+        }
+    }
+    return input;
 }

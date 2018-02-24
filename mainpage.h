@@ -43,6 +43,10 @@ private slots:
 
     void on_GraphUpdate_clicked();
 
+    void on_GraphClear_clicked();
+
+    void on_Analysis_clicked();
+
 private:
     Ui::MainPage *ui;
 };

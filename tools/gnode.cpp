@@ -1,6 +1,6 @@
 #include "gnode.h"
 
-GNode::GNode(int ID, QString text,QGraphicsItem *parent)
+GNode::GNode(QString ID, QString text, QGraphicsItem *parent)
     :QGraphicsItem(parent)
 {
     this->text = text;

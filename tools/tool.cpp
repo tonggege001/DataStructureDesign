@@ -29,3 +29,42 @@ int Value2Hash(int prime,int max,int value,int * array){
     }
     return value;
 }
+
+vector<EventLog *> similarLog(manageLog * ManageLog,EventLog log){
+    vector<EventLog *> simlog;
+    for(int i = 0;i<ManageLog->size;i++){
+        EventLog * founded = ManageLog->logs[i];
+        if(founded==NULL) continue;
+        int count = 0;//相似因子,当相似因子的数大于5时，视为该LOG相似
+        if(founded->getLogName().compare(log.getLogName())==0) count++;
+        if(founded->getTaskType()==log.getTaskType()) count++;
+        if(founded->getClassType()==log.getClassType()) count++;
+        if(founded->getKeyWord()==log.getKeyWord()) count++;
+        if(founded->getSourceID()==log.getSourceID()) count++;
+        if(founded->getUser().compare(log.getUser())==0) count++;
+        if(count >= 5) simlog.push_back(founded);
+    }
+    return simlog;
+}
+
+vector<EventLog *> PriorNode(manageGraph * ManageGraph,EventLog log){
+    EventGraph * G = ManageGraph->findGraph(log.getID(),LOG::GraphType::CauseAndEffect);
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
