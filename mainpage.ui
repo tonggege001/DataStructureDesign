@@ -34,7 +34,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>2</number>
+     <number>1</number>
     </property>
     <property name="iconSize">
      <size>
@@ -682,9 +682,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>560</y>
+        <y>520</y>
         <width>1221</width>
-        <height>56</height>
+        <height>31</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -704,21 +704,6 @@
          </property>
          <property name="text">
           <string>分析结果展示：</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="resultLabel">
-         <property name="font">
-          <font>
-           <family>Agency FB</family>
-           <pointsize>12</pointsize>
-           <weight>75</weight>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>TextLabel</string>
          </property>
         </widget>
        </item>
@@ -745,6 +730,31 @@
         </widget>
        </item>
       </layout>
+     </widget>
+     <widget class="QPlainTextEdit" name="ResuleLabel">
+      <property name="geometry">
+       <rect>
+        <x>3</x>
+        <y>556</y>
+        <width>1221</width>
+        <height>201</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <family>宋体</family>
+        <pointsize>11</pointsize>
+       </font>
+      </property>
+      <property name="autoFillBackground">
+       <bool>false</bool>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="plainText">
+       <string/>
+      </property>
      </widget>
     </widget>
    </widget>

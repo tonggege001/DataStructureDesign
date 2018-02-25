@@ -10,7 +10,7 @@ EventLog::EventLog(int ID)
 {
     this->eventID = ID;
     this->classType = 0;
-    this->eventRecordID = -1;
+    this->eventRecordID = 0;
     this->keyWord = 0;
     this->logName = NULL;
     this->sourceID = 0;

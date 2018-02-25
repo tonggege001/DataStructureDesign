@@ -1,4 +1,6 @@
 #include <cmath>
+#include"tools/tool.h"
+
 bool isPrime(int M){
     for(int i = 2;i<sqrt(M);i++){
         if(M%i==0) return false;
@@ -46,16 +48,85 @@ vector<EventLog *> similarLog(manageLog * ManageLog,EventLog log){
     }
     return simlog;
 }
-
-vector<EventLog *> PriorNode(manageGraph * ManageGraph,EventLog log){
+/**
+ * @brief PriorNode 获得一个节点的所有前驱节点
+ * @param ManageGraph 图管理器
+ * @param log 节点事件
+ * @return
+ */
+vector<EventLog *> PriorNode(manageGraph * ManageGraph, manageLog * ManageLog, EventLog log){
     EventGraph * G = ManageGraph->findGraph(log.getID(),LOG::GraphType::CauseAndEffect);
+    vector<EventLog *> vec;
+    for(int i = 0;i<G->nodeCount;i++){
+        if(G->adj[i][G->VHmap[log.getID()]]==1){
+            int id = G->getKeyByValue(i);
+            vec.push_back(ManageLog->getLog(id));
+        }
+    }
+    return vec;
+}
 
+vector<EventLog *> NextNode(manageGraph * ManageGraph, manageLog * ManageLog, EventLog log){
+    EventGraph * G = ManageGraph->findGraph(log.getID(),LOG::GraphType::CauseAndEffect);
+    vector<EventLog *> vec;
+    for(int i = 0;i<G->nodeCount;i++){
+        if(G->adj[G->VHmap[log.getID()]][i]==1){
+            int id = G->getKeyByValue(i);
+            vec.push_back(ManageLog->getLog(id));
+        }
+    }
+    return vec;
 }
 
 
+QString ResultStr(manageGraph * ManageGraph, manageLog * ManageLog, EventLog * log){
 
+    //查询相似事件的结果
+    vector <EventLog*> simlog = similarLog(ManageLog,*log);
+    if(simlog.empty()){
+        return "";
+    }
+    QString labelText;
+    int num = (int)simlog.size();
+    QString * strSet = new QString[num];
+    labelText = "过往的事件总共有"+QString::number(num)+"种情况，我们做了如下预测：\n";
+    for(int i = 0;i<num;i++){
+        strSet[i] = "第"+QString::number(i+1)+"种情况：";
+        EventLog * eventlog = simlog.back();
+        strSet[i] = strSet[i]+"本次事件与ID为"+QString::number(eventlog->getID())+"的事件相似，所以我们推测";
+        simlog.pop_back();
+        //获得前驱和后记事件；然后给出结果
+        vector<EventLog *> prior = PriorNode(ManageGraph, ManageLog, *eventlog);
+        vector<EventLog *> nextN = NextNode(ManageGraph, ManageLog, *eventlog);
+        QString pr,nx;
+        for(int j = 0;j<(int)(prior.size());j++){
+            EventLog * log2 = prior.back();prior.pop_back();
+            pr = pr+" “"+ QString::fromStdString(log2->getDescription()) +"”";
+        }
+        for(int j = 0;j<(int)(nextN.size());j++){
+            EventLog * log3 = nextN.back();nextN.pop_back();
+            nx = nx+" “"+ QString::fromStdString(log3->getDescription()) +"”";
+        }
+        if(pr.length()==0){
+            strSet[i] = strSet[i]+"本次事件可能是源头事件,";
+        }
+        else{
+            strSet[i] = strSet[i] + "本次事件可能是"+pr+"导致的，";
+        }
+        if(nx.length()==0){
+            strSet[i] = strSet[i] +"本次事件是汇点事件。\n";
+        }
+        else{
+            strSet[i] = strSet[i] + "随后可能会发生"+nx+"等事件。\n";
+        }
+    }
+    for(int i = 0;i<num;i++){
+        labelText = labelText+strSet[i];
+    }
+    delete []strSet;
+    return labelText;
 
-
+}
 
 
 

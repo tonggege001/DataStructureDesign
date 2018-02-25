@@ -251,42 +251,67 @@ void MainPage::on_GraphClear_clicked()
 
 void MainPage::on_Analysis_clicked()
 {
-    EventLog log(-1);
-    log.setLogName(ui->LogNameE->text().toStdString());
-    log.setTaskType(ui->TaskTypeE->text().toInt());
-    log.setClassType(ui->ClassTypeE->text().toInt());
-    log.setKeyWord(ui->KeyWordE->text().toInt());
-    log.setSourceID(ui->SourceIDE->text().toInt());
-    log.setUser(ui->UserE->text().toStdString());
-    log.setTime(ui->OccurTimeE->dateTime().toSecsSinceEpoch());
-    log.setEventRecordID(ui->EventRecordE->text().toInt());
-    log.setDescription(ui->DescriptionE->text().toStdString());
+    if(!(ui->LogNameE->text()!=""&&ui->TaskTypeE->text()!=""&&ui->ClassTypeE->text()!=""&&
+            ui->KeyWordE->text()!=""&&ui->SourceIDE->text()!=""&&ui->UserE->text()!=""&&
+         ui->EventRecordE->text()!=""&&ui->DescriptionE->text()!="")){
+        QMessageBox::about(this,"提示","信息不完整，请补充完整！");
+        return;
+    }
+    EventLog * log = new EventLog(999);
+    log->setLogName(ui->LogNameE->text().toStdString());
+    log->setTaskType(ui->TaskTypeE->text().toInt());
+    log->setClassType(ui->ClassTypeE->text().toInt());
+    log->setKeyWord(ui->KeyWordE->text().toInt());
+    log->setSourceID(ui->SourceIDE->text().toInt());
+    log->setUser(ui->UserE->text().toStdString());
+    log->setTime(ui->OccurTimeE->dateTime().toSecsSinceEpoch());
+    log->setEventRecordID(ui->EventRecordE->text().toInt());
+    log->setDescription(ui->DescriptionE->text().toStdString());
 
-    //查询相似事件的结果
-    vector <EventLog*> simlog = similarLog(this->ManageLog,log);
-    if(simlog.empty()){
+    QString s = ResultStr(this->ManageGraph,this->ManageLog,log);
+    delete log;
+    if(s==""){
         QMessageBox::about(this,"提示","没有相似的事件！");
-        ui->resultLabel->setText("分析失败，系统中没有相似的事件！");
+        ui->ResuleLabel->setPlainText("分析失败，系统中没有相似的事件！");
     }
-    QString * strSet = new QString[simlog.size()];
-    for(int i = 0;i<simlog.size();i++){
-        EventLog * eventlog = simlog.back();
-        simlog.pop_back();
-        //获得前去和后记事件；然后给出结果
+    else{
+        ui->ResuleLabel->setPlainText(s);
     }
+    return;
 }
 
+void MainPage::on_clear_Button_clicked()
+{
+    ui->LogNameE->setText("");
+    ui->TaskTypeE->setText("");
+    ui->ClassTypeE->setText("");
+    ui->KeyWordE->setText("");
+    ui->SourceIDE->setText("");
+    ui->UserE->setText("");
+    ui->EventRecordE->setText("");
+    ui->DescriptionE->setText("");
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+void MainPage::on_Save_Button_clicked()
+{
+    if(!(ui->LogNameE->text()!=""&&ui->TaskTypeE->text()!=""&&ui->ClassTypeE->text()!=""&&
+            ui->KeyWordE->text()!=""&&ui->SourceIDE->text()!=""&&ui->UserE->text()!=""&&
+         ui->EventRecordE->text()!=""&&ui->DescriptionE->text()!="")){
+        QMessageBox::about(this,"提示","信息不完整，请补充完整！");
+        return;
+    }
+    QString str = QInputDialog::getText(this,"输入新日志的ID","请输入新日志的ID：");
+    int ID = str.toInt();
+    EventLog * log = new EventLog(ID);
+    log->setLogName(ui->LogNameE->text().toStdString());
+    log->setTaskType(ui->TaskTypeE->text().toInt());
+    log->setClassType(ui->ClassTypeE->text().toInt());
+    log->setKeyWord(ui->KeyWordE->text().toInt());
+    log->setSourceID(ui->SourceIDE->text().toInt());
+    log->setUser(ui->UserE->text().toStdString());
+    log->setTime(ui->OccurTimeE->dateTime().toSecsSinceEpoch());
+    log->setEventRecordID(ui->EventRecordE->text().toInt());
+    log->setDescription(ui->DescriptionE->text().toStdString());
+    this->ManageLog->AddLog(log);
+    QMessageBox::about(this,"添加成功","添加成功，请及时存盘！");
+}

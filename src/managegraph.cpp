@@ -123,7 +123,7 @@ void AccumCreate(manageLog * ManageLog, EventGraph & Graph,int index){
         if(ManageLog->logs[i]==NULL) continue;
         if(ManageLog->logs[i]->getID()==index) continue;
         int time1 = ManageLog->logs[i]->getTime();int time2 = ManageLog->logs[index]->getTime();
-        if(ManageLog->logs[i]->getTaskType()==ManageLog->logs[index]->getTaskType()
+        if(ManageLog->logs[i]->getEventRecordID()==ManageLog->logs[index]->getEventRecordID()
               &&(time1-time2)*(time1-time2)<100 ){
             Graph.addNode(ManageLog->logs[i]->getID());
         }
@@ -210,24 +210,24 @@ void manageGraph::DrawGraph(QGraphicsScene * scene, EventGraph * G,int type){
     case LOG::GraphType::Subject:
         titleTxt = QString::fromStdString(this->ManageLog->getLog(iter->first)->getUser());
         title = new GNode("主体相关:",titleTxt);
+        title->setPos(-155,-200);
+        scene->addItem(title);
         break;
 
     case LOG::GraphType::Object:
         titleTxt = QString::number(this->ManageLog->getLog(iter->first)->getSourceID());
         title = new GNode("客体相关:",titleTxt);
+        title->setPos(-155,-200);
+        scene->addItem(title);
         break;
-
     case LOG::GraphType::AccomEvent:
         titleTxt = QString::number(this->ManageLog->getLog(iter->first)->getTaskType());
         title = new GNode("伴随事件:",titleTxt);
-        break;
-    case LOG::GraphType::CauseAndEffect:
-
+        title->setPos(-155,-200);
+        scene->addItem(title);
         break;
     }
     if(type!=LOG::GraphType::CauseAndEffect){
-        title->setPos(-155,-200);
-        scene->addItem(title);
         for(map<int,int>::iterator i = G->VHmap.begin();i!= G->VHmap.end();i++,count++){
             GNode *gnode = new GNode(QString::number(i->first),
                                      QString::fromStdString(this->ManageLog->getLog(i->first)->getLogName()));

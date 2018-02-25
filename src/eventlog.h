@@ -37,24 +37,17 @@ public:
         return this->eventID;
     }
 
-    string getLogName(){return *this->logName;}
-
-    int setLogName(string name){
-        if(name.length()!=0){
-            delete this->logName;
-            this->logName = new string(name.data());
-            return 1;
-        }
-        else{
-            return 0;
-        }
+    string getLogName(){
+        if(this->logName==NULL) return "";
+        return *this->logName;
     }
 
-    bool setLogName(char name[]){
-        delete this->logName;
-        this->logName = new string(name);
+    bool setLogName(string name){
+        if(this->logName!=NULL) delete this->logName;
+        this->logName = new string(name.data());
         return true;
     }
+
 
     int getSourceID(){return this->sourceID;}
 
@@ -83,10 +76,11 @@ public:
     }
 
     string getUser(){
+        if(this->User==NULL) return "";
         return *this->User;
     }
     bool setUser(string name){
-        delete this->User;
+        if(this->User!=NULL) delete this->User;
         this->User = new string(name.data());
         return true;
     }
@@ -98,10 +92,11 @@ public:
     bool setKeyWord(int key){this->keyWord = key;return true;}
 
     string getDescription(){
+        if(this->description==NULL) return "";
         return *this->description;
     }
     bool setDescription(string des){
-        delete this->description;
+        if(this->description!=NULL) delete this->description;
         this->description = new string(des.data());
         return true;
     }
