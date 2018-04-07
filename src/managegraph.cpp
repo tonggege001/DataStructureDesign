@@ -1,10 +1,16 @@
 #include "managegraph.h"
 #include<QGraphicsScene>
 #include<fstream>
+#include<QMessageBox>
+
+/**
+ * @brief manageGraph::manageGraph 管理图类的构造器
+ * @param Manage 管理LOG的地址
+ */
 manageGraph::manageGraph(manageLog * Manage)
 {
     this->size = this->BASE;
-    this->Graph = new EventGraph*[this->size];
+    this->Graph = new EventGraph*[this->size];//分配空间
     for(int i = 0;i<size;i++){
         this->Graph[i] = NULL;
     }
@@ -26,19 +32,25 @@ manageGraph::~manageGraph(){
  * @return 正确
  */
 bool manageGraph::addGraph(EventGraph *g){
-    if(this->graphCount<=this->size){
+    if((this->graphCount+2)==this->size){//空间是否满，重新分配空间
         EventGraph ** newgra = new EventGraph*[this->size+this->INCRE];
         for(int i = 0;i<graphCount;i++){
             newgra[i] = this->Graph[i];
         }
-        delete this->Graph;
+        delete this->Graph; //释放原有空间
         this->Graph = newgra;
+        this->size = this->size+this->INCRE;
     }
+    //插入图
     this->Graph[this->graphCount] = g;
-    this->graphCount++;
+    this->graphCount++;//图的数量增加
     return true;
 }
-
+/**
+ * @brief manageGraph::GraphCount
+ *      获得图的数量
+ * @return
+ */
 int manageGraph::GraphCount(){
     return this->graphCount;
 }
@@ -50,6 +62,7 @@ int manageGraph::GraphCount(){
  * @return
  */
 bool manageGraph::hasGraph(int index, int type){
+    //遍历图，寻找符合要求的图
     for(int i = 0;i<this->graphCount;i++){
         if(this->Graph[i]==NULL) continue;
         if(this->Graph[i]->getContent()==type&&
@@ -62,8 +75,17 @@ void SubCreate(manageLog * ManageLog, EventGraph & Graph,int index);//使用者�
 void ObjCreate(manageLog * ManageLog, EventGraph & Graph,int index);//来源相同相同
 void AccumCreate(manageLog * ManageLog, EventGraph & Graph,int index);//任务类型相同
 void CauseAndEffectCreate(manageLog * ManageLog, EventGraph & Graph,int index);//同一进程下的事件
+
+/**
+ * @brief manageGraph::generateGraph 根据序号和类型生成相应的图
+ * @param index 序号
+ * @param Type 类型
+ * @return
+ */
 EventGraph * manageGraph::generateGraph(int index, int Type){
-    EventGraph * gra = new EventGraph();
+    EventGraph * gra = new EventGraph();//生成一个空图
+
+    //根据要求生成相应的图
     switch(Type){
     case LOG::GraphType::Subject:
         SubCreate(this->ManageLog,*gra,index);
@@ -90,45 +112,65 @@ EventGraph * manageGraph::generateGraph(int index, int Type){
 
 /**
  * @brief SubCreate 生成主体相关图
- * @param ManageLog
- * @param Graph
- * @param index
+ * @param ManageLog LOG管理器
+ * @param Graph 图引用
+ * @param index 序号值
  */
 void SubCreate(manageLog * ManageLog, EventGraph & Graph,int index){
-    Graph.addNode(index);
+    Graph.addNode(index);//增加顶点
     for(int i = 0;i<ManageLog->size;i++){
         if(ManageLog->logs[i]==NULL) continue;
         if(ManageLog->logs[i]->getID()==index) continue;
-        if(ManageLog->logs[i]->getUser().compare(ManageLog->logs[index]->getUser())==0){
+        //若两个事件的使用者相同，并且名称不同，则该接待加入到图中
+        if(ManageLog->logs[i]->getUser().compare(ManageLog->getLog(index)->getUser())==0
+                &&ManageLog->logs[i]->getLogName().compare(ManageLog->getLog(index)->getLogName())!=0){
             Graph.addNode(ManageLog->logs[i]->getID());
         }
     }
 }
-
+/**
+ * @brief ObjCreate 生成客体相关图
+ * @param ManageLog LOG管理器
+ * @param Graph 图引用
+ * @param index 序号值
+ */
 void ObjCreate(manageLog * ManageLog, EventGraph & Graph,int index){
     Graph.addNode(index);
     for(int i = 0;i<ManageLog->size;i++){
         if(ManageLog->logs[i]==NULL) continue;
         if(ManageLog->logs[i]->getID()==index) continue;
-        int time1 = ManageLog->logs[i]->getTime();int time2 = ManageLog->logs[index]->getTime();
-        if(ManageLog->logs[i]->getSourceID()==ManageLog->logs[index]->getSourceID()
-                &&(time1-time2)*(time1-time2)<100){
+        int time1 = ManageLog->logs[i]->getTime();int time2 = ManageLog->getLog(index)->getTime();
+        if(ManageLog->logs[i]->getSourceID()==ManageLog->getLog(index)->getSourceID()
+                &&(time1-time2)*(time1-time2)<100&&ManageLog->logs[i]->getLogName().compare(ManageLog->getLog(index)->getLogName())!=0){
             Graph.addNode(ManageLog->logs[i]->getID());
         }
     }
 }
+/**
+ * @brief AccumCreate 生成伴随事件图
+ * @param ManageLog LOG管理器
+ * @param Graph 图引用
+ * @param index 序号值
+ */
 void AccumCreate(manageLog * ManageLog, EventGraph & Graph,int index){
     Graph.addNode(index);
     for(int i = 0;i<ManageLog->size;i++){
         if(ManageLog->logs[i]==NULL) continue;
-        if(ManageLog->logs[i]->getID()==index) continue;
-        int time1 = ManageLog->logs[i]->getTime();int time2 = ManageLog->logs[index]->getTime();
-        if(ManageLog->logs[i]->getEventRecordID()==ManageLog->logs[index]->getEventRecordID()
+        if(ManageLog->logs[i]->getID()==index||ManageLog->getLog(i)->getLogName().compare(ManageLog->getLog(index)->getLogName())==0) continue;
+        int time1 = ManageLog->logs[i]->getTime();int time2 = ManageLog->getLog(index)->getTime();
+        //进程ID相同，且时间相差在10s以内，则增加该顶点
+        if(ManageLog->logs[i]->getEventRecordID()==ManageLog->getLog(index)->getEventRecordID()
               &&(time1-time2)*(time1-time2)<100 ){
             Graph.addNode(ManageLog->logs[i]->getID());
         }
     }
 }
+/**
+ * @brief CauseAndEffectCreate 生成因果相关图
+ * @param ManageLog LOG管理器
+ * @param Graph 图引用
+ * @param index 序号值
+ */
 void CauseAndEffectCreate(manageLog * ManageLog, EventGraph & Graph,int index){
     Graph.addNode(index);
     vector<int> nodes;
@@ -136,9 +178,9 @@ void CauseAndEffectCreate(manageLog * ManageLog, EventGraph & Graph,int index){
     for(int i = 0;i<ManageLog->size;i++){
         if(ManageLog->logs[i]==NULL) continue;
         if(ManageLog->logs[i]->getID()==index) continue;
-        //事件进程相同
-        int time1 = ManageLog->logs[i]->getTime();int time2 = ManageLog->logs[index]->getTime();
-        if(ManageLog->logs[i]->getEventRecordID()==ManageLog->logs[index]->getEventRecordID()&&
+        //事件进程相同，且时间相差10s则增加定点
+        int time1 = ManageLog->logs[i]->getTime();int time2 = ManageLog->getLog(index)->getTime();
+        if(ManageLog->logs[i]->getEventRecordID()==ManageLog->getLog(index)->getEventRecordID()&&
                 (time1-time2)*(time1-time2)<500){
             Graph.addNode(ManageLog->logs[i]->getID());
             nodes.push_back(ManageLog->logs[i]->getID());
@@ -152,10 +194,11 @@ void CauseAndEffectCreate(manageLog * ManageLog, EventGraph & Graph,int index){
             */
         }
     }
-    //加边
+    //加边，根据时间点，分成本事件之前和本事件之后
     for(vector<int>::iterator iter_out = nodes.begin();iter_out!=nodes.end();iter_out++){
         for(vector<int>::iterator iter_in = nodes.begin();iter_in!=nodes.end();iter_in++){
             if(*iter_out==(*iter_in)) continue;
+            //根据时间分类
             if(ManageLog->getLog(*iter_out)->getTime()>ManageLog->getLog(*iter_in)->getTime()){
                 Graph.addAdj(*iter_in,*iter_out);
             }
@@ -191,6 +234,7 @@ EventGraph * manageGraph::findGraph(int index, int type){
     EventGraph * G = NULL;
     for(int i = 0;i<this->graphCount;i++){
         if(this->Graph[i]==NULL) continue;
+        //当满足类型相同，并且顶点相同，图找到
         if(this->Graph[i]->getContent()==type&&
                 this->Graph[i]->hasNode(index)){
             G = this->Graph[i];
@@ -200,6 +244,12 @@ EventGraph * manageGraph::findGraph(int index, int type){
     return G;
 }
 
+/**
+ * @brief manageGraph::DrawGraph 将图以二维图片表示出来（非核心逻辑代码，注释省略）
+ * @param scene 场景
+ * @param G 图
+ * @param type
+ */
 void manageGraph::DrawGraph(QGraphicsScene * scene, EventGraph * G,int type){
     int count = 0;int num = -100;
     int ypos = 250;
@@ -249,6 +299,12 @@ void manageGraph::DrawGraph(QGraphicsScene * scene, EventGraph * G,int type){
 }
 void propDraw(manageLog * ManageLog, QGraphicsScene * scene, EventGraph *G,vector<int> *review, int centralID,int X,int Y);
 void backDraw(manageLog * ManageLog, QGraphicsScene * scene, EventGraph *G,vector<int> *review, int centralID,int X,int Y);
+/**
+ * @brief manageGraph::DrawGraphCE 将因果关系图画成二维图片，非核心逻辑代码，注释省略
+ * @param scene
+ * @param G
+ * @param centralID
+ */
 void manageGraph::DrawGraphCE(QGraphicsScene * scene, EventGraph *G,int centralID){
 
     QGraphicsTextItem * txttile = new QGraphicsTextItem("本次事件的位置如下：");
@@ -344,27 +400,38 @@ void propDraw(manageLog * ManageLog, QGraphicsScene * scene, EventGraph *G,vecto
     }
 }
 
+/**
+ * @brief manageGraph::LoadGraph 加载图
+ * @return
+ */
 bool manageGraph::LoadGraph(){
+    //打开文件
     std::ifstream infile("EventGraph");
     if(!infile.is_open()) return false;
     int total;
     infile >>total;
     EventGraph * G;
-
+    //读取图数量，循环读取图的邻接矩阵信息
     for(int i = 0;i<total;i++){
         G = new EventGraph();
-        infile >> *G;
+        infile >> *G; //（>>运算符已重载）
         this->addGraph(G);
     }
     infile.close();
     return true;
 }
+
+/**
+ * @brief manageGraph::SaveGraph 保存图
+ * @return
+ */
 bool manageGraph::SaveGraph(){
-    std::ofstream outfile("EventGraph");
-    outfile <<this->graphCount<<' ';
+    std::ofstream outfile("EventGraph");//打开文件
+    outfile <<this->graphCount<<' ';//输出图的数量
+    //循环输出图的玲姐矩阵
     for(int i = 0;i<this->graphCount;i++){
         if(this->Graph[i]!=NULL){
-            outfile<< *Graph[i];
+            outfile<< *Graph[i];//（<<运算符已重载）
         }
     }
     return true;

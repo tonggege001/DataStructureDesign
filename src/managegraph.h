@@ -12,7 +12,7 @@ class manageGraph
 {
 private:
     manageLog * ManageLog;//事件集操作
-    int graphCount;
+    int graphCount;//图的个数
     int size;
 
 public:

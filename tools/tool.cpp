@@ -31,7 +31,12 @@ int Value2Hash(int prime,int max,int value,int * array){
     }
     return value;
 }
-
+/**
+ * @brief similarLog 获得相似的事件，并返回成vector
+ * @param ManageLog
+ * @param log
+ * @return
+ */
 vector<EventLog *> similarLog(manageLog * ManageLog,EventLog log){
     vector<EventLog *> simlog;
     for(int i = 0;i<ManageLog->size;i++){
@@ -58,27 +63,39 @@ vector<EventLog *> PriorNode(manageGraph * ManageGraph, manageLog * ManageLog, E
     EventGraph * G = ManageGraph->findGraph(log.getID(),LOG::GraphType::CauseAndEffect);
     vector<EventLog *> vec;
     for(int i = 0;i<G->nodeCount;i++){
-        if(G->adj[i][G->VHmap[log.getID()]]==1){
-            int id = G->getKeyByValue(i);
+        if(G->adj[i][G->VHmap[log.getID()]]==1){//邻接矩阵的值为1时，保存相应的节点
+            int id = G->getKeyByValue(i);//反向获得ID
             vec.push_back(ManageLog->getLog(id));
         }
     }
     return vec;
 }
-
+/**
+ * @brief NextNode 获得一个节点的所有后继节点
+ * @param ManageGraph
+ * @param ManageLog
+ * @param log
+ * @return
+ */
 vector<EventLog *> NextNode(manageGraph * ManageGraph, manageLog * ManageLog, EventLog log){
     EventGraph * G = ManageGraph->findGraph(log.getID(),LOG::GraphType::CauseAndEffect);
     vector<EventLog *> vec;
     for(int i = 0;i<G->nodeCount;i++){
-        if(G->adj[G->VHmap[log.getID()]][i]==1){
-            int id = G->getKeyByValue(i);
+        if(G->adj[G->VHmap[log.getID()]][i]==1){//邻接矩阵的值为1时，保存相应的节点
+            int id = G->getKeyByValue(i);//反向获得ID
             vec.push_back(ManageLog->getLog(id));
         }
     }
     return vec;
 }
 
-
+/**
+ * @brief ResultStr 根据查询结果获得最终评判字符串
+ * @param ManageGraph
+ * @param ManageLog
+ * @param log
+ * @return
+ */
 QString ResultStr(manageGraph * ManageGraph, manageLog * ManageLog, EventLog * log){
 
     //查询相似事件的结果

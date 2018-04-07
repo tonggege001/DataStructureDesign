@@ -7,8 +7,9 @@ EventGraph::EventGraph()
     this->nodeCount = 0;
     this->adj = new int*[this->BASENUM];//行
     for(int i = 0;i<BASENUM;i++){
-        this->adj[i] = new int[BASENUM];
+        this->adj[i] = new int[BASENUM];//列
     }
+    //邻接矩阵初始化为0
     for(int i = 0;i<BASENUM;i++){
         for(int j = 0;j<BASENUM;j++){
             this->adj[i][j] = 0;
@@ -18,12 +19,18 @@ EventGraph::EventGraph()
 }
 
 EventGraph::~EventGraph(){
+    //释放空间
     for(int i = 0;i<this->size;i++){
         delete this->adj[i];
     }
     delete this->adj;
 }
 
+/**
+ * @brief EventGraph::addNode 增加图节点
+ * @param value 值
+ * @return
+ */
 bool EventGraph::addNode(int value){
     if(this->VHmap.count(value)) return false;//节点已经存在
     if(this->nodeCount>=this->size){
@@ -57,19 +64,38 @@ bool EventGraph::addNode(int value){
     this->VHmap[value] = this->nodeCount++;
     return true;
 }
+
+/**
+ * @brief EventGraph::addAdj 增加图的边
+ * @param tailValue 弧尾节点的值
+ * @param headValue 弧头结点的值
+ * @return
+ */
 bool EventGraph::addAdj(int tailValue,int headValue){
+    //判断传值是否合法
     if(!this->VHmap.count(tailValue)) return false;
     if(!this->VHmap.count(headValue)) return false;
     int tail = VHmap.at(tailValue);
     int head = VHmap.at(headValue);
+    //修改邻接矩阵的值
     this->adj[tail][head] = 1;
     return true;
 }
 
+/**
+ * @brief EventGraph::hasNode 图是否有某节点
+ * @param value 节点的值
+ * @return
+ */
 bool EventGraph::hasNode(int value){
     return VHmap.count(value)==1;
 }
 
+/**
+ * @brief EventGraph::getKeyByValue 通过值获得顶点序号
+ * @param value 顶点的值
+ * @return
+ */
 int EventGraph::getKeyByValue(int value){
     for(map<int,int>::iterator iter = this->VHmap.begin();iter!=this->VHmap.end();iter++){
         if(iter->second == value) return iter->first;
@@ -77,10 +103,18 @@ int EventGraph::getKeyByValue(int value){
     return -1;
 }
 
-
+/**
+ * @brief EventGraph::getContent 获得图的类型
+ * @return
+ */
 int EventGraph::getContent(){
     return this->GraphContent;
 }
+/**
+ * @brief EventGraph::setContent 设置图的类型
+ * @param type 类型
+ * @return
+ */
 bool EventGraph::setContent(int type){
     this->GraphContent = type;
     return true;

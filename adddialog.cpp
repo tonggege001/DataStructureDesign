@@ -46,6 +46,7 @@ void AddDialog::on_buttonBox_accepted(){
         QMessageBox::about(this, "警告", "警告：请输入调用者！");
     }
     else{
+        //添加节点，直接调用构造器即可
         EventLog * log = new EventLog(ui->LogNameEdit->text().toStdString(),ui->SourceIDEdit->text().toInt(), ui->OccurTimeEdit->dateTime().toSecsSinceEpoch(),
                                                      ui->EventIDEdit->text().toInt(),ui->TaskTypeEdit->text().toInt(),
                                                      ui->ClassTypeEdit->text().toInt(),ui->UserEdit->text().toStdString(),

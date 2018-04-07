@@ -16,10 +16,10 @@ class MainPage : public QMainWindow
     Q_OBJECT
 
 public:
-    manageLog * ManageLog;
-    manageGraph * ManageGraph;
+    manageLog * ManageLog;//管理LOG
+    manageGraph * ManageGraph;//管理图
     QStandardItemModel * Tablemodel;//日志操作的Model
-    QGraphicsScene * GraphScene;
+    QGraphicsScene * GraphScene;//作图类
     explicit MainPage(QWidget *parent = 0);
     ~MainPage();
 

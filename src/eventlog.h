@@ -27,21 +27,33 @@ private:
 
 public:
     int tag=0;//标志域
+    //事件构造器
     EventLog(int ID);
     EventLog(string logName,int sourceID,time_t occurTime,
              int eventID,int taskType,int classType,string User,
              int eventRecordID,int keyWord,string description);
     ~EventLog();
+    /**
+     * @brief getID 获得事件ID
+     * @return
+     */
     int getID(){
         if(this==NULL) return -1;
         return this->eventID;
     }
-
+    /**
+     * @brief getLogName 获得事件名称
+     * @return
+     */
     string getLogName(){
         if(this->logName==NULL) return "";
         return *this->logName;
     }
-
+    /**
+     * @brief setLogName 设置事件名称
+     * @param name 事件名称字符串
+     * @return
+     */
     bool setLogName(string name){
         if(this->logName!=NULL) delete this->logName;
         this->logName = new string(name.data());
@@ -79,18 +91,21 @@ public:
         if(this->User==NULL) return "";
         return *this->User;
     }
+
     bool setUser(string name){
         if(this->User!=NULL) delete this->User;
         this->User = new string(name.data());
         return true;
     }
 
-    int getEventRecordID(){return this->eventRecordID;}
+    int getEventRecordID(){return this->eventRecordID;}//获得进程ID
     bool setEventRecordID(int id){this->eventRecordID = id;return true;}
 
+    //关键字的设置
     int getKeyWord(){return this->keyWord;}
     bool setKeyWord(int key){this->keyWord = key;return true;}
 
+    //描述设置
     string getDescription(){
         if(this->description==NULL) return "";
         return *this->description;

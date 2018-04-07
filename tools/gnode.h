@@ -5,6 +5,10 @@
 #include<string>
 
 
+/**
+ * @brief The GNode class
+ * UI作图
+ */
 class GNode : public QGraphicsItem
 {
 public:

@@ -12,7 +12,7 @@ class AddDialog : public QDialog
     Q_OBJECT
 
 public:
-    manageLog * ManageLog;
+    manageLog * ManageLog;//管理LOG类
      AddDialog(QWidget *parent,manageLog * manage_log);
     ~AddDialog();
 

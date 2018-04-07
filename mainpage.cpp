@@ -1,4 +1,5 @@
-#include "mainpage.h"
+
+       #include "mainpage.h"
 #include "ui_mainpage.h"
 #include <QCheckBox>
 #include<QLineEdit>
@@ -137,6 +138,7 @@ void MainPage::on_action_Delete_ID_triggered()
 {
     bool isOK;
     QString text = QInputDialog::getText(this, "输入待删除的ID","请输入待删除的日志ID：",QLineEdit::Normal,"",&isOK);
+  //  QMessageBox::about(NULL,text,text);
     if(isOK) {
         if(this->ManageLog->DeleteLog(text.toInt())){
             QMessageBox::about(this, "删除成功！", "删除成功！");
@@ -218,8 +220,8 @@ void MainPage::on_GraphUpdate_clicked()
 {
     //首先删除所有的图
     ManageGraph->deleteAllGraph();
-
     //其次产生新的图
+
     for(int i = 0;i<ManageLog->size;i++){
         //该事件不存在，则进行下一个
         if(ManageLog->logs[i]==NULL) continue;
@@ -315,3 +317,16 @@ void MainPage::on_Save_Button_clicked()
     this->ManageLog->AddLog(log);
     QMessageBox::about(this,"添加成功","添加成功，请及时存盘！");
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
